@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  test-microservice:
+    build:
+      context: ./test-microservice
+      dockerfile: ./test-microservice.dockerfile
+    restart: always
+    deploy:
+      mode: replicated
+      replicas: 1
