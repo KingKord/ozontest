@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package short;
+
+option go_package = "/protobuf/short";
+
+message URLRequest {
+  string URL = 1;
+}
+
+message URLResponse {
+  string URL = 1;
+}
+
+
+service UrlShortener {
+  rpc ShortenURL(URLRequest) returns (URLResponse);
+  rpc GetOriginalURL(URLRequest) returns (URLResponse);
+}
