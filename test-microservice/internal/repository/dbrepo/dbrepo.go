@@ -1,15 +1,21 @@
 package dbrepo
 
-import "test-microservice/internal/repository"
+import (
+	"database/sql"
+	"test-microservice/internal/repository"
+)
 
 type postgresDBRepo struct {
+	DB *sql.DB
 }
 
 type inMemoryDBRepo struct {
 }
 
-func NewPostgresDBRepo() repository.DatabaseRepo {
-	return &postgresDBRepo{}
+func NewPostgresDBRepo(conn *sql.DB) repository.DatabaseRepo {
+	return &postgresDBRepo{
+		DB: conn,
+	}
 }
 
 func NewInMemoryDBRepo() repository.DatabaseRepo {
