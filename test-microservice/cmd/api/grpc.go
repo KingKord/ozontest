@@ -12,18 +12,30 @@ import (
 
 type ShortenerServer struct {
 	short.UnimplementedUrlShortenerServer
-	Service services.URLShortener
+	Shortener services.URLShortener
 }
 
 func (s ShortenerServer) ShortenURL(ctx context.Context, req *short.URLRequest) (*short.URLResponse, error) {
+	URL := req.GetURL()
 
-	res := &short.URLResponse{URL: "someUrl"}
+	shortenURL, err := s.Shortener.ShortenURL(URL)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &short.URLResponse{URL: shortenURL}
 	return res, nil
 }
 
 func (s ShortenerServer) GetOriginalURL(ctx context.Context, req *short.URLRequest) (*short.URLResponse, error) {
+	shortURL := req.GetURL()
 
-	res := &short.URLResponse{URL: "someUrl"}
+	originalURL, err := s.Shortener.GetOriginalURL(shortURL)
+	if err != nil {
+		return nil, err
+	}
+
+	res := &short.URLResponse{URL: originalURL}
 	return res, nil
 }
 
@@ -36,7 +48,7 @@ func gRPCListen() {
 	s := grpc.NewServer()
 
 	short.RegisterUrlShortenerServer(s, &ShortenerServer{
-		Service: app.Service,
+		Shortener: app.Service,
 	})
 
 	log.Printf("gRPC Server started on port %s", gRPCPort)

@@ -12,8 +12,8 @@ const (
 )
 
 type URLShortener interface {
-	shortenURL(URL string) (string, error)
-	getOriginalURL(shortURL string) (string, error)
+	ShortenURL(URL string) (string, error)
+	GetOriginalURL(shortURL string) (string, error)
 }
 
 type URLShortenerByRandomizing struct {
@@ -38,7 +38,7 @@ func generateShortLink() (string, error) {
 	return string(shortLink), nil
 }
 
-func (U URLShortenerByRandomizing) shortenURL(URL string) (string, error) {
+func (U URLShortenerByRandomizing) ShortenURL(URL string) (string, error) {
 	shortURL, err := generateShortLink()
 	if err != nil {
 		return "", err
@@ -52,7 +52,7 @@ func (U URLShortenerByRandomizing) shortenURL(URL string) (string, error) {
 	return shortURL, nil
 }
 
-func (U URLShortenerByRandomizing) getOriginalURL(shortURL string) (string, error) {
+func (U URLShortenerByRandomizing) GetOriginalURL(shortURL string) (string, error) {
 	longURL, err := U.repo.GetLongURL(shortURL)
 	if err != nil {
 		return "", err
