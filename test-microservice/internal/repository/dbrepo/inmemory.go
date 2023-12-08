@@ -10,7 +10,7 @@ func (i inMemoryDBRepo) GetShortURL() (string, error) {
 	panic("implement me")
 }
 
-func (i inMemoryDBRepo) GetLongURL() (string, error) {
+func (i inMemoryDBRepo) GetLongURL(string) (string, error) {
 	//TODO implement me
 	panic("implement me")
 }

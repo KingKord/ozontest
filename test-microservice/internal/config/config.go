@@ -7,5 +7,5 @@ import (
 
 type Config struct {
 	DB      repository.DatabaseRepo
-	Service services.URLShortenerInterface
+	Service services.URLShortener
 }

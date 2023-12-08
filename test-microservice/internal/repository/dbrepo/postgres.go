@@ -10,7 +10,7 @@ func (p postgresDBRepo) GetShortURL() (string, error) {
 	panic("implement me")
 }
 
-func (p postgresDBRepo) GetLongURL() (string, error) {
+func (p postgresDBRepo) GetLongURL(string) (string, error) {
 	//TODO implement me
 	panic("implement me")
 }

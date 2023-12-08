@@ -12,7 +12,7 @@ import (
 
 type ShortenerServer struct {
 	short.UnimplementedUrlShortenerServer
-	Service services.URLShortenerInterface
+	Service services.URLShortener
 }
 
 func (s ShortenerServer) ShortenURL(ctx context.Context, req *short.URLRequest) (*short.URLResponse, error) {
