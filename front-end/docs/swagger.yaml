@@ -1,0 +1,59 @@
+basePath: /
+definitions:
+  main.jsonResponse:
+    properties:
+      data: {}
+      error:
+        type: boolean
+      message:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: test task FrontEnd
+  version: "1.0"
+paths:
+  /original:
+    get:
+      consumes:
+      - application/json
+      description: get URL back from short URL
+      parameters:
+      - description: Short URL
+        in: query
+        name: ShortURL
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful returned
+          schema:
+            $ref: '#/definitions/main.jsonResponse'
+      summary: get URL back
+      tags:
+      - URL
+  /shorten:
+    post:
+      consumes:
+      - application/json
+      description: save URL To DB and get short URL back
+      parameters:
+      - description: Long URL
+        in: query
+        name: LongURL
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successful shorten
+          schema:
+            $ref: '#/definitions/main.jsonResponse'
+      summary: URL shortener
+      tags:
+      - URL
+swagger: "2.0"

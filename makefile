@@ -13,3 +13,9 @@ down:
 	@echo Stopping docker images...
 	docker-compose down
 	@echo Done!
+
+
+swag:
+	@echo Updating swagger documentation...
+	cd ./front-end/&& swag init -g cmd/api/main.go
+	@echo Done!

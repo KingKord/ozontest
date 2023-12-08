@@ -9,6 +9,8 @@ services:
     deploy:
       mode: replicated
       replicas: 1
+    ports:
+      - "8080:8080"
 
   test-microservice:
     build:
