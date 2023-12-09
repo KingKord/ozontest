@@ -4,13 +4,12 @@ import (
 	"context"
 	"database/sql"
 	"errors"
-	"fmt"
 	"github.com/jackc/pgconn"
 	"log"
 	"time"
 )
 
-func (p postgresDBRepo) Add(URL string, shortURL string) error {
+func (p *postgresDBRepo) Add(URL string, shortURL string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -20,10 +19,10 @@ func (p postgresDBRepo) Add(URL string, shortURL string) error {
 		URL,
 	)
 	if err != nil {
-		pgErr, ok := err.(*pgconn.PgError)
+		_, ok := err.(*pgconn.PgError)
 		if ok {
 			log.Println("Duplicate hashes:", err)
-			return pgErr
+			return errors.New("duplicate hashes")
 		}
 
 		// Handle other errors
@@ -35,7 +34,7 @@ func (p postgresDBRepo) Add(URL string, shortURL string) error {
 }
 
 // GetShortURL retrieves short URL from DB via long URL. If there is no long URL in DB returns "" and nil
-func (p postgresDBRepo) GetShortURL(URL string) (string, error) {
+func (p *postgresDBRepo) GetShortURL(URL string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -55,7 +54,7 @@ func (p postgresDBRepo) GetShortURL(URL string) (string, error) {
 	return shortURL, nil
 }
 
-func (p postgresDBRepo) GetLongURL(shortURL string) (string, error) {
+func (p *postgresDBRepo) GetLongURL(shortURL string) (string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
@@ -65,7 +64,7 @@ func (p postgresDBRepo) GetLongURL(shortURL string) (string, error) {
 	err := p.DB.QueryRowContext(ctx, query, shortURL).Scan(&longURL)
 	switch {
 	case errors.Is(err, sql.ErrNoRows):
-		return "", errors.New(fmt.Sprintf("no such short URL, %v", err))
+		return "", errors.New("shortURL not found")
 	case err != nil:
 		return "", err
 	default:

@@ -2,7 +2,6 @@ package services
 
 import (
 	"crypto/rand"
-	"github.com/jackc/pgconn"
 	"math/big"
 	"test-microservice/internal/repository"
 )
@@ -53,24 +52,19 @@ func (U URLShortenerByRandomizing) ShortenURL(URL string) (string, error) {
 	shortURL, err := generateShortLink()
 	if err != nil {
 		return "", err
-
 	}
 
 	err = U.repo.Add(URL, shortURL)
 	if err != nil {
-		//if IsPostgres {
-		_, ok := err.(*pgconn.PgError)
-		if ok { // Handle err when hashes duplicates with already existing
+		// Handle err when hashes duplicates with already existing
+		if err.Error() == "duplicate hashes" {
 			shortURL, err = generateShortLink()
 			if err != nil {
 				return "", err
 			}
 			err = U.repo.Add(URL, shortURL)
 		}
-
 		return "", err
-		//}
-		//return "", err
 	}
 
 	return shortURL, nil

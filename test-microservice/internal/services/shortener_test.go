@@ -2,6 +2,8 @@ package services
 
 import (
 	"github.com/stretchr/testify/assert"
+	"reflect"
+	"test-microservice/internal/repository"
 	"test-microservice/internal/repository/dbrepo"
 	"testing"
 )
@@ -49,7 +51,7 @@ var testsForGetOriginalURL = []struct {
 	expected      string
 }{
 	{1, "all fine", "existingHash", false, "", "youtube.com/channels/beast?redirect=true&from=finder"},
-	{2, "case where hash does not exist", "non-existenceHash", true, "hash not exist in DB", ""},
+	{2, "case where hash does not exist", "non-existenceHash", true, "shortURL not found", ""},
 	{3, "case where error occurred in DB", "invalidDB", true, "invalid DB", ""},
 }
 
@@ -69,5 +71,14 @@ func TestURLShortenerByRandomizing_GetOriginalURL(t *testing.T) {
 				assert.Contains(t, originalURL, test.expected)
 			}
 		}
+	}
+}
+
+func TestNewURLShortenerByRandomizing(t *testing.T) {
+	var DBRepo repository.DatabaseRepo
+	service := NewURLShortenerByRandomizing(DBRepo)
+
+	if reflect.TypeOf(service).String() != "*services.URLShortenerByRandomizing" {
+		t.Errorf("Did not get correct type from NewURLShortenerByRandomizing: got %s, wanted *services.URLShortenerByRandomizing", reflect.TypeOf(service).String())
 	}
 }

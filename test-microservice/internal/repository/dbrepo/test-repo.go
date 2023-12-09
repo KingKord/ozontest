@@ -24,7 +24,7 @@ func (t testDBRepo) GetShortURL(URL string) (string, error) {
 
 func (t testDBRepo) GetLongURL(shortURL string) (string, error) {
 	if shortURL == "non-existenceHash" {
-		return "", errors.New("hash not exist in DB")
+		return "", errors.New("shortURL not found")
 	}
 
 	if shortURL == "invalidDB" {
