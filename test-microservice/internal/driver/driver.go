@@ -2,6 +2,7 @@ package driver
 
 import (
 	"database/sql"
+	"github.com/golang-migrate/migrate/v4"
 	"log"
 	"os"
 	"time"
@@ -32,11 +33,12 @@ func ConnectToDB() *sql.DB {
 			counts++
 		} else {
 			log.Println("Connected to Postgres!")
+			migrateUp()
 			return connection
 		}
 
 		if counts > 10 {
-			log.Println(err)
+			log.Fatal(err)
 			return nil
 		}
 
@@ -44,4 +46,29 @@ func ConnectToDB() *sql.DB {
 		time.Sleep(time.Second * 2)
 		continue
 	}
+}
+
+func migrateUp() {
+	dbURL := os.Getenv("dbURL")
+	migrationPath := os.Getenv("migrationPath")
+	if migrationPath == "" || dbURL == "" {
+		log.Println("no env variables...")
+		return
+	}
+
+	// Create a new instance of migrate.
+	m, err := migrate.New(migrationPath, dbURL)
+	if err != nil {
+		log.Println("Error creating migrate instance:", err)
+		os.Exit(1)
+	}
+
+	// Migrations to the last version.
+	err = m.Up()
+	if err != nil && err != migrate.ErrNoChange {
+		log.Println("Error applying migrations:", err)
+		os.Exit(1)
+	}
+
+	log.Println("Migrations applied successfully.")
 }
