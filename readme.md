@@ -4,7 +4,7 @@
 
 Название микросервиса - test-microservice.
 Для удобной проверки я сделал что-то типо фронта, который принимает http запросы
-и общается с test-microservice через gRPC. Swagger доступен по [ссылке](localhost:8080/swagger/index.html).
+и общается с test-microservice через gRPC. Swagger доступен по `localhost:8080/swagger/index.html`.
 Для запуска проекта можно использовать команду.
 ```
 make up_build
