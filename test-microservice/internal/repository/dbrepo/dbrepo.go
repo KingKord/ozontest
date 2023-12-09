@@ -16,6 +16,9 @@ type inMemoryDBRepo struct {
 	mu        sync.RWMutex
 }
 
+type testDBRepo struct {
+}
+
 func NewPostgresDBRepo(conn *sql.DB) repository.DatabaseRepo {
 	return &postgresDBRepo{
 		DB: conn,
@@ -28,4 +31,8 @@ func NewInMemoryDBRepo() repository.DatabaseRepo {
 		longURLs:  make(map[string]string),
 		mu:        sync.RWMutex{},
 	}
+}
+
+func NewTestingDBRepo() repository.DatabaseRepo {
+	return &testDBRepo{}
 }
