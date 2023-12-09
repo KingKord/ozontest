@@ -37,3 +37,7 @@ migrationPath: "file:///app"
 - [gRPC](https://google.golang.org/grpc)
 - [testify](https://github.com/stretchr/testify)
 - [protobuf](https://google.golang.org/protobuf)
+
+## Docker Image:
+https://hub.docker.com/r/gorbatykh/ozontest
+

@@ -13,6 +13,8 @@ services:
       - "8080:8080"
 
   test-microservice:
+#    you can use image from dockerhub
+#    image: gorbatykh/ozontest:1.0.0
     build:
       context: ./test-microservice
       dockerfile: ./test-microservice.dockerfile
