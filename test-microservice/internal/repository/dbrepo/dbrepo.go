@@ -2,6 +2,7 @@ package dbrepo
 
 import (
 	"database/sql"
+	"sync"
 	"test-microservice/internal/repository"
 )
 
@@ -10,6 +11,9 @@ type postgresDBRepo struct {
 }
 
 type inMemoryDBRepo struct {
+	shortURLs map[string]string
+	longURLs  map[string]string
+	mu        sync.RWMutex
 }
 
 func NewPostgresDBRepo(conn *sql.DB) repository.DatabaseRepo {
@@ -19,5 +23,9 @@ func NewPostgresDBRepo(conn *sql.DB) repository.DatabaseRepo {
 }
 
 func NewInMemoryDBRepo() repository.DatabaseRepo {
-	return inMemoryDBRepo{}
+	return &inMemoryDBRepo{
+		shortURLs: make(map[string]string),
+		longURLs:  make(map[string]string),
+		mu:        sync.RWMutex{},
+	}
 }

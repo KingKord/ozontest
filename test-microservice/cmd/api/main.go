@@ -1,8 +1,10 @@
 package main
 
 import (
+	"os"
 	"test-microservice/internal/config"
 	"test-microservice/internal/driver"
+	"test-microservice/internal/repository"
 	"test-microservice/internal/repository/dbrepo"
 	"test-microservice/internal/services"
 
@@ -20,10 +22,16 @@ const (
 var app config.Config
 
 func main() {
+	dbType := os.Getenv("dbType")
+	var dbRepo repository.DatabaseRepo
 
-	db := driver.ConnectToDB()
+	if dbType == "postgres" {
+		db := driver.ConnectToDB()
+		dbRepo = dbrepo.NewPostgresDBRepo(db)
+	} else {
+		dbRepo = dbrepo.NewInMemoryDBRepo()
+	}
 
-	dbRepo := dbrepo.NewPostgresDBRepo(db)
 	testService := services.NewURLShortenerByRandomizing(dbRepo)
 	app = config.Config{
 		DB:      dbRepo,
