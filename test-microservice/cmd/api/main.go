@@ -24,7 +24,7 @@ func main() {
 	db := driver.ConnectToDB()
 
 	dbRepo := dbrepo.NewPostgresDBRepo(db)
-	testService := services.NewURLShortener(dbRepo)
+	testService := services.NewURLShortenerByRandomizing(dbRepo)
 	app = config.Config{
 		DB:      dbRepo,
 		Service: testService,

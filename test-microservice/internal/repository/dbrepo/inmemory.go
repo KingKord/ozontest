@@ -5,7 +5,7 @@ func (i inMemoryDBRepo) Add(URL string, shortURL string) error {
 	panic("implement me")
 }
 
-func (i inMemoryDBRepo) GetShortURL() (string, error) {
+func (i inMemoryDBRepo) GetShortURL(string) (string, error) {
 	//TODO implement me
 	panic("implement me")
 }

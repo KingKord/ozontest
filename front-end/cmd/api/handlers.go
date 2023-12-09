@@ -72,7 +72,7 @@ func getOriginalURLHandler(w http.ResponseWriter, r *http.Request) {
 	defer cancel()
 
 	req := &short.URLRequest{URL: shortURL}
-	longURL, err := c.ShortenURL(ctx, req)
+	longURL, err := c.GetOriginalURL(ctx, req)
 	if err != nil {
 		_ = ErrorJSON(w, err)
 		return

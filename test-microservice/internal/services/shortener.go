@@ -2,6 +2,7 @@ package services
 
 import (
 	"crypto/rand"
+	"github.com/jackc/pgconn"
 	"math/big"
 	"test-microservice/internal/repository"
 )
@@ -10,6 +11,8 @@ const (
 	letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_"
 	length  = 10
 )
+
+//var app config.Config
 
 type URLShortener interface {
 	ShortenURL(URL string) (string, error)
@@ -20,7 +23,7 @@ type URLShortenerByRandomizing struct {
 	repo repository.DatabaseRepo
 }
 
-func NewURLShortener(databaseRepo repository.DatabaseRepo) URLShortener {
+func NewURLShortenerByRandomizing(databaseRepo repository.DatabaseRepo) URLShortener {
 	return &URLShortenerByRandomizing{
 		repo: databaseRepo,
 	}
@@ -39,14 +42,35 @@ func generateShortLink() (string, error) {
 }
 
 func (U URLShortenerByRandomizing) ShortenURL(URL string) (string, error) {
+	shortURLFromDB, err := U.repo.GetShortURL(URL)
+	if err != nil {
+		return "", err
+	}
+	if shortURLFromDB != "" {
+		return shortURLFromDB, nil
+	}
+
 	shortURL, err := generateShortLink()
 	if err != nil {
 		return "", err
+
 	}
 
 	err = U.repo.Add(URL, shortURL)
 	if err != nil {
+		//if IsPostgres {
+		_, ok := err.(*pgconn.PgError)
+		if ok { // Handle err when hashes duplicates with already existing
+			shortURL, err = generateShortLink()
+			if err != nil {
+				return "", err
+			}
+			err = U.repo.Add(URL, shortURL)
+		}
+
 		return "", err
+		//}
+		//return "", err
 	}
 
 	return shortURL, nil
