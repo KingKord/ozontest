@@ -1,10 +1,10 @@
 package services
 
 import (
+	"errors"
 	"github.com/stretchr/testify/assert"
 	"reflect"
 	"test-microservice/internal/repository"
-	"test-microservice/internal/repository/dbrepo"
 	"testing"
 )
 
@@ -24,7 +24,7 @@ var testsForShortenURL = []struct {
 }
 
 func TestURLShortenerByRandomizing_ShortenURL(t *testing.T) {
-	mockRepo := dbrepo.NewTestingDBRepo() // Используем мок для базы данных
+	mockRepo := newTestingDBRepo() // Используем мок для базы данных
 	urlShortener := NewURLShortenerByRandomizing(mockRepo)
 
 	for _, test := range testsForShortenURL {
@@ -56,7 +56,7 @@ var testsForGetOriginalURL = []struct {
 }
 
 func TestURLShortenerByRandomizing_GetOriginalURL(t *testing.T) {
-	mockRepo := dbrepo.NewTestingDBRepo() // Используем мок для базы данных
+	mockRepo := newTestingDBRepo() // Используем мок для базы данных
 	urlShortener := NewURLShortenerByRandomizing(mockRepo)
 
 	for _, test := range testsForGetOriginalURL {
@@ -81,4 +81,43 @@ func TestNewURLShortenerByRandomizing(t *testing.T) {
 	if reflect.TypeOf(service).String() != "*services.URLShortenerByRandomizing" {
 		t.Errorf("Did not get correct type from NewURLShortenerByRandomizing: got %s, wanted *services.URLShortenerByRandomizing", reflect.TypeOf(service).String())
 	}
+}
+
+type testDBRepo struct {
+}
+
+func newTestingDBRepo() repository.DatabaseRepo {
+	return &testDBRepo{}
+}
+
+func (t testDBRepo) Add(URL string, shortURL string) error {
+	if URL == "test.com/duplicate-hash" {
+		return errors.New("duplicate hashes")
+	}
+
+	return nil
+}
+
+func (t testDBRepo) GetShortURL(URL string) (string, error) {
+	if URL == "test.com/existing" {
+		return "existingHash", nil
+	}
+
+	if URL == "test.com/err-in-DB" {
+		return "", errors.New("error in DB")
+	}
+
+	return "", nil
+}
+
+func (t testDBRepo) GetLongURL(shortURL string) (string, error) {
+	if shortURL == "non-existenceHash" {
+		return "", errors.New("shortURL not found")
+	}
+
+	if shortURL == "invalidDB" {
+		return "", errors.New("invalid DB")
+	}
+
+	return "youtube.com/channels/beast?redirect=true&from=finder", nil
 }

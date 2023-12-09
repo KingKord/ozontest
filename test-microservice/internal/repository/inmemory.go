@@ -1,10 +1,19 @@
-package dbrepo
+package repository
 
 import (
 	"errors"
 	"fmt"
 	"log"
+	"sync"
 )
+
+func NewInMemoryDBRepo() DatabaseRepo {
+	return &inMemoryDBRepo{
+		shortURLs: make(map[string]string),
+		longURLs:  make(map[string]string),
+		mu:        sync.RWMutex{},
+	}
+}
 
 func (i *inMemoryDBRepo) Add(URL string, shortURL string) error {
 	log.Printf("adding %s, %s\n", URL, shortURL)

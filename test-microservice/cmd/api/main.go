@@ -5,7 +5,6 @@ import (
 	"test-microservice/internal/config"
 	"test-microservice/internal/driver"
 	"test-microservice/internal/repository"
-	"test-microservice/internal/repository/dbrepo"
 	"test-microservice/internal/services"
 
 	_ "github.com/golang-migrate/migrate/v4/database/postgres"
@@ -27,9 +26,9 @@ func main() {
 
 	if dbType == "postgres" {
 		db := driver.ConnectToDB()
-		dbRepo = dbrepo.NewPostgresDBRepo(db)
+		dbRepo = repository.NewPostgresDBRepo(db)
 	} else {
-		dbRepo = dbrepo.NewInMemoryDBRepo()
+		dbRepo = repository.NewInMemoryDBRepo()
 	}
 
 	testService := services.NewURLShortenerByRandomizing(dbRepo)

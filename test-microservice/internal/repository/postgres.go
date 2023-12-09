@@ -1,4 +1,4 @@
-package dbrepo
+package repository
 
 import (
 	"context"
@@ -9,12 +9,18 @@ import (
 	"time"
 )
 
+func NewPostgresDBRepo(conn *sql.DB) DatabaseRepo {
+	return &postgresDBRepo{
+		db: conn,
+	}
+}
+
 func (p *postgresDBRepo) Add(URL string, shortURL string) error {
 	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
 	defer cancel()
 
 	query := `insert into urls (shorturl, longurl) values ($1, $2)`
-	_, err := p.DB.ExecContext(ctx, query,
+	_, err := p.db.ExecContext(ctx, query,
 		shortURL,
 		URL,
 	)
@@ -41,7 +47,7 @@ func (p *postgresDBRepo) GetShortURL(URL string) (string, error) {
 	query := `select shorturl from urls where longurl = $1`
 
 	var shortURL string
-	err := p.DB.QueryRowContext(ctx, query, URL).Scan(&shortURL)
+	err := p.db.QueryRowContext(ctx, query, URL).Scan(&shortURL)
 	switch {
 	case errors.Is(err, sql.ErrNoRows):
 		return "", nil
@@ -61,7 +67,7 @@ func (p *postgresDBRepo) GetLongURL(shortURL string) (string, error) {
 	query := `select longurl from urls where shorturl = $1`
 
 	var longURL string
-	err := p.DB.QueryRowContext(ctx, query, shortURL).Scan(&longURL)
+	err := p.db.QueryRowContext(ctx, query, shortURL).Scan(&longURL)
 	switch {
 	case errors.Is(err, sql.ErrNoRows):
 		return "", errors.New("shortURL not found")

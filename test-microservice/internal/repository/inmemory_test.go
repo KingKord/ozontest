@@ -1,4 +1,4 @@
-package dbrepo
+package repository
 
 import (
 	"github.com/stretchr/testify/assert"
@@ -9,7 +9,7 @@ import (
 func TestNewInMemoryDBRepo(t *testing.T) {
 	repo := NewInMemoryDBRepo()
 
-	if reflect.TypeOf(repo).String() != "*dbrepo.inMemoryDBRepo" {
+	if reflect.TypeOf(repo).String() != "*repository.inMemoryDBRepo" {
 		t.Errorf("Did not get correct type from NewURLShortenerByRandomizing: got %s, wanted *dbrepo.inMemoryDBRepo", reflect.TypeOf(repo).String())
 	}
 }

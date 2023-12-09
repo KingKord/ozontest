@@ -40,8 +40,8 @@ func generateShortLink() (string, error) {
 	return string(shortLink), nil
 }
 
-func (U URLShortenerByRandomizing) ShortenURL(URL string) (string, error) {
-	shortURLFromDB, err := U.repo.GetShortURL(URL)
+func (u URLShortenerByRandomizing) ShortenURL(URL string) (string, error) {
+	shortURLFromDB, err := u.repo.GetShortURL(URL)
 	if err != nil {
 		return "", err
 	}
@@ -54,7 +54,7 @@ func (U URLShortenerByRandomizing) ShortenURL(URL string) (string, error) {
 		return "", err
 	}
 
-	err = U.repo.Add(URL, shortURL)
+	err = u.repo.Add(URL, shortURL)
 	if err != nil {
 		// Handle err when hashes duplicates with already existing
 		if err.Error() == "duplicate hashes" {
@@ -62,7 +62,7 @@ func (U URLShortenerByRandomizing) ShortenURL(URL string) (string, error) {
 			if err != nil {
 				return "", err
 			}
-			err = U.repo.Add(URL, shortURL)
+			err = u.repo.Add(URL, shortURL)
 		}
 		return "", err
 	}
@@ -70,8 +70,8 @@ func (U URLShortenerByRandomizing) ShortenURL(URL string) (string, error) {
 	return shortURL, nil
 }
 
-func (U URLShortenerByRandomizing) GetOriginalURL(shortURL string) (string, error) {
-	longURL, err := U.repo.GetLongURL(shortURL)
+func (u URLShortenerByRandomizing) GetOriginalURL(shortURL string) (string, error) {
+	longURL, err := u.repo.GetLongURL(shortURL)
 	if err != nil {
 		return "", err
 	}
